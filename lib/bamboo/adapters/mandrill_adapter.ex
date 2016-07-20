@@ -109,13 +109,7 @@ defmodule Bamboo.MandrillAdapter do
   defp attachments(%{attachments: attachments}) do
     attachments
     |> Enum.reverse
-    |> Enum.map(fn(att) ->
-      %{
-        name: att.filename,
-        type: att.content_type,
-        content: Base.encode64(File.read!(att.path))
-      }
-    end)
+    |> Enum.map(fn x -> convert_to_base64(x) end)
   end
 
   defp recipients(email) do
@@ -143,7 +137,24 @@ defmodule Bamboo.MandrillAdapter do
     HTTPoison.post!("#{base_uri}/#{path}", params, headers)
   end
 
+  defp convert_to_base64(%{type: :base64} = att) do
+    %{
+      name: att.filename,
+      type: att.content_type,
+      content: att.content
+    }
+  end
+
+  defp convert_to_base64(att) do
+    %{
+      name: att.filename,
+      type: att.content_type,
+      content: Base.encode64(File.read!(att.path))
+    }
+  end
+
   defp base_uri do
     Application.get_env(:bamboo, :mandrill_base_uri) || @default_base_uri
   end
+
 end

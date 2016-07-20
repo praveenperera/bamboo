@@ -50,7 +50,7 @@ defmodule Bamboo.Mixfile do
   defp deps do
     [
       {:plug, "~> 1.0"},
-      {:ex_machina, "~> 1.0.0-beta.0", github: "thoughtbot/ex_machina", only: [:test]},
+      {:ex_machina, "~> 1.0", only: [:test]},
       {:cowboy, "~> 1.0", only: [:test, :dev]},
       {:phoenix, "~> 1.1", only: :test},
       {:phoenix_html, "~> 2.2", only: :test},
@@ -58,6 +58,7 @@ defmodule Bamboo.Mixfile do
       {:floki, "~> 0.8", only: :test},
       {:ex_doc, "~> 0.9", only: :dev},
       {:earmark, ">= 0.0.0", only: :dev},
+      {:mix_test_watch, "~> 0.2", only: :dev},
       {:httpoison, "~> 0.8"},
       {:poison, ">= 1.5.0"},
     ]

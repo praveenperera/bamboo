@@ -2,7 +2,7 @@ defmodule Bamboo.Attachment do
   @moduledoc """
   """
 
-  defstruct filename: nil, content_type: nil, path: nil
+  defstruct type: :path, filename: nil, content_type: nil, path: nil, content: nil
 
   @doc ~S"""
   Creates a new Attachment
@@ -14,10 +14,15 @@ defmodule Bamboo.Attachment do
     Attachment.new(params["file"]) # Where params["file"] is a %Plug.Upload
   """
   def new(path, opts \\ [])
-  if Code.ensure_loaded?(Plug) do
-    def new(%Plug.Upload{filename: filename, content_type: content_type, path: path}, opts), do:
-      new(path, Dict.merge([filename: filename, content_type: content_type], opts))
+
+  def new(%Plug.Upload{filename: filename, content_type: content_type, path: path}, opts) do
+    new(path, Keyword.merge([filename: filename, content_type: content_type], opts))
   end
+
+  def new(%{type: :base64, filename: filename, content_type: content_type, content: content}, _opts) do
+    %__MODULE__{type: :base64, filename: filename, content_type: content_type, content: content}
+  end
+
   def new(path, opts) do
     filename = opts[:filename] || Path.basename(path)
     content_type = opts[:content_type] || determine_content_type(path)
